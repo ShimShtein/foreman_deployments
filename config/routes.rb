@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :create_resources, module: 'ForemanDeployments'
+
   namespace :foreman_deployments do
     namespace :api do
       scope '(:apiv)',

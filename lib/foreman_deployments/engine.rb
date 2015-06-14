@@ -46,6 +46,10 @@ module ForemanDeployments
       Apipie.configuration.checksum_path += ['/foreman_deployments/api/']
     end
 
+    initializer "foreman_deployments.require_dynflow", :before => "foreman_tasks.initialize_dynflow" do |app|
+      ::ForemanTasks.dynflow.require!
+    end
+
     # Include concerns in this config.to_prepare block
     # config.to_prepare do
     #   ::Hostgroup.send :include, ForemanDeployments::Concerns::Hostgroup
