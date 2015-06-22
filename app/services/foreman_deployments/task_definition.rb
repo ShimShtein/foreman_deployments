@@ -4,17 +4,10 @@ module ForemanDeployments
   class TaskDefinition
     attr_accessor :task_class, :params
     attr_accessor :parent_task, :definitions
-    attr_accessor :dependent_on
 
     def initialize(parent_task, definitions, task_class, params)
       @parent_task, @definitions = parent_task, definitions
       @task_class, @params = task_class, params
-      @dependent_on = []
-
-      # check dependencies
-      dereference(@params) do |task_ref|
-        @dependent_on << task_ref.task_id
-      end
     end
 
     def validate
@@ -29,6 +22,7 @@ module ForemanDeployments
       @validated = @task_class.get_validation_object(params)
       throw 'validation object should inherit from ValidationResult' unless @validated.is_a? ValidationResult
       @validated.validate!
+      @validated
     end
 
     def plan
@@ -40,6 +34,8 @@ module ForemanDeployments
 
       @task = @parent_task.send(:plan_action, @task_class, params)
     end
+
+    private
 
     def dereference(value, &func)
       return func.call(value) if value.is_a? TaskReference
