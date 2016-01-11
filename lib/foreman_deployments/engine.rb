@@ -1,6 +1,7 @@
 require 'foreman_tasks'
 require 'safe_yaml/load'
 require 'foreman_deployments/monkey_patches'
+require 'foreman_deployments/dynflow_output_patches'
 
 module ForemanDeployments
   class Engine < ::Rails::Engine

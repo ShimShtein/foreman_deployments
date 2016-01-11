@@ -7,6 +7,22 @@ module ForemanDeployments
           results = SerializableArray.new(results)
           SearchTaskDefinition.create_output(results, output)
         end
+
+        def self.dereference_output(storage, path)
+          path.each_with_index do |key, i|
+            if key == 'results' && i == 0
+              storage = storage[:input][:class].constantize.where(:id => storage[:output][:result][:ids])
+              next
+            end
+            return nil if storage.nil?
+            if storage.is_a?(Hash) || storage.is_a?(Dynflow::ExecutionPlan::OutputReference)
+              storage = storage[key]
+            else
+              storage = storage.send(key)
+            end
+          end
+          storage
+        end
       end
 
       class SerializableArray < Array
